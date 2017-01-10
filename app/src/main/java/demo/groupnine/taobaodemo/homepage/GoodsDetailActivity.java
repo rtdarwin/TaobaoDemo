@@ -16,6 +16,9 @@ import demo.groupnine.taobaodemo.net.HttpCallbackListener;
 import demo.groupnine.taobaodemo.net.HttpRequest;
 import demo.groupnine.taobaodemo.shoppingcart.Result;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -36,7 +39,7 @@ public class GoodsDetailActivity
     private boolean hasFetchedResult;
 
     private ImageSwitcher mImageSwitcher;
-    private Drawable[] drawables;
+    private ArrayList<Drawable> drawables;
     private int currentPosition;
     private float downX;
     private LinearLayout linearLayout;
@@ -131,21 +134,33 @@ public class GoodsDetailActivity
                 .append("&attributeId=").append(checkedAttrId)
                 .append("&goodsNum=").append(goodsNum);
 
+        Log.d(TAG, "addToShoppingCartClickListener: " + para);
+
         HttpRequest.addToShoppingCart(para.toString(), new HttpCallbackListener() {
             @Override
             public void onFinish(Object responese)
             {
-                if (((Result) responese).result.equals("true")) {
-                    Toast.makeText(GoodsDetailActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(GoodsDetailActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
-                }
+                final Object r = responese;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        if (((Result) r).result.equals("true")) {
+                            Log.d(TAG, "onFinish: ");
+
+                            Toast.makeText(GoodsDetailActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(GoodsDetailActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
 
             @Override
             public void onError(Exception e)
             {
                 Log.d(TAG, "onError: add to shopping cart failed");
+                e.printStackTrace();
             }
         });
     }
@@ -175,10 +190,11 @@ public class GoodsDetailActivity
         }
         goodsId = getIntent().getStringExtra("goodsId");
         Log.d(TAG, "onStart: " + goodsId);
-//        fetchGoodsDetail();
-//        updateUI();
-//        checkedAttrId = detail.attributes.get(0).attributeId;
-//        goodsNum = 1;
+        drawables = null;
+        fetchGoodsDetail();
+        updateUI();
+        checkedAttrId = detail.attributes.get(0).attributeId;
+        goodsNum = 1;
     }
 
     private void fetchGoodsDetail()
@@ -231,13 +247,17 @@ public class GoodsDetailActivity
     private void fetchGoodsImages()
     {
         for (int i = 0; i < detail.images.size(); ++i) {
-
+            Log.d(TAG, "fetchGoodsImages: image " + i + " : " + detail.images.get(i));
             HttpRequest.getImage(detail.images.get(i), new HttpCallbackListener() {
                 @Override
                 public void onFinish(Object responese)
                 {
+                    if(drawables == null){
+                        drawables = new ArrayList<Drawable>();
+                    }
                     synchronized (drawables) {
-                        drawables[drawables.length] = (Drawable) responese;
+                        Log.d(TAG, "fetchGoodsImages: " + drawables.size());
+                        drawables.add((Drawable) responese);
                     }
                 }
 
@@ -245,6 +265,7 @@ public class GoodsDetailActivity
                 public void onError(Exception e)
                 {
                     Log.d(TAG, "onError: fetch image failed");
+                    e.printStackTrace();
                 }
             });
         }
@@ -252,9 +273,9 @@ public class GoodsDetailActivity
 
     private void updateUI()
     {
-        updateImages();
         updateDescribe();
         updateAttrs();
+        updateImages();
     }
 
     private void updateDescribe()
@@ -265,17 +286,24 @@ public class GoodsDetailActivity
         // price
         double dprice = Double.parseDouble(detail.attributes.get(0).price);
         double ddiscount = Double.parseDouble(detail.discountRate);
-        if (new Date(detail.discountDeadline).before(new Date())) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        if (df.parse(detail.discountDeadline.substring(0,10), new ParsePosition(0)).before(new Date())) {
             price.setText("￥ " + detail.attributes.get(0).price);
             discount.setVisibility(View.INVISIBLE);
             oldPriceLinearLayout.setVisibility(View.INVISIBLE);
         } else {
-            price.setText("￥ " + String.valueOf(dprice * ddiscount).format("%.2f"));
+            price.setText("￥ " + String.format("%.2f", dprice * ddiscount));
             discount.setVisibility(View.VISIBLE);
             oldPriceLinearLayout.setVisibility(View.VISIBLE);
             oldPrice.setText(detail.attributes.get(0).price);
         }
-
+        if(shop == null){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         // shopName
         shopName.setText(shop.shopName);
     }
@@ -295,8 +323,14 @@ public class GoodsDetailActivity
             mImageView.setBackgroundResource(R.drawable.banner_round_select);
             linearLayout.addView(mImageView, layoutParams);
         }
-
-        mImageSwitcher.setImageDrawable(drawables[0]);
+        while(drawables == null){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        mImageSwitcher.setImageDrawable(drawables.get(0));
 
         setImageBackground(currentPosition);
     }
@@ -306,6 +340,11 @@ public class GoodsDetailActivity
         for(int i = 0; i < detail.attributes.size(); ++i){
             View attr = createGoodsAttr(detail.attributes.get(i));
             attrList.addView(attr);
+            if(i == 0){
+                TextView value = (TextView) attr.findViewById(R.id.attributeValue);
+                value.setBackgroundColor(getResources().getColor(R.color.tb_red));
+                value.setTextColor(getResources().getColor(R.color.white));
+            }
         }
     }
 
@@ -332,6 +371,7 @@ public class GoodsDetailActivity
                 }
                 checkedAttrId = ((TextView)v.findViewById(R.id.attributeId)).getText().toString();
                 TextView vvalue = (TextView) v.findViewById(R.id.attributeValue);
+                Log.d(TAG, "createGoodsAttr: " + vvalue.getText().toString());
                 vvalue.setBackgroundColor(getResources().getColor(R.color.tb_red));
                 vvalue.setTextColor(getResources().getColor(R.color.white));
                 String p = ((TextView)v.findViewById(R.id.attrPrice)).getText().toString();
@@ -358,7 +398,7 @@ public class GoodsDetailActivity
                         mImageSwitcher.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.left_in));
                         mImageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.right_out));
                         currentPosition--;
-                        mImageSwitcher.setImageDrawable(drawables[currentPosition % drawables.length]);
+                        mImageSwitcher.setImageDrawable(drawables.get(currentPosition % drawables.size()));
                         setImageBackground(currentPosition);
                     } else {
                         Toast.makeText(getApplication(), "已经是第一张", Toast.LENGTH_SHORT).show();
@@ -366,11 +406,11 @@ public class GoodsDetailActivity
                 }
 
                 if (lastX < downX) {
-                    if (currentPosition < drawables.length - 1) {
+                    if (currentPosition < drawables.size() - 1) {
                         mImageSwitcher.setInAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.right_in));
                         mImageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(getApplication(), R.anim.lift_out));
                         currentPosition++;
-                        mImageSwitcher.setImageDrawable(drawables[currentPosition]);
+                        mImageSwitcher.setImageDrawable(drawables.get(currentPosition));
                         setImageBackground(currentPosition);
                     } else {
                         Toast.makeText(getApplication(), "到了最后一张", Toast.LENGTH_SHORT).show();
