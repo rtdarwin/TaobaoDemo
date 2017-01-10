@@ -1,41 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="#ffffff"
-             android:orientation="vertical">
-
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-            <ImageView
-                    android:id="@+id/cart_blank_list"
-                    android:layout_width="256dp"
-                    android:layout_height="256dp"
-                    android:src="@drawable/blank_sc"/>
-
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/cart_recycler_view"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-    </FrameLayout>
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:orientation="vertical">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
+            android:id="@+id/fragment_cart_bottom_bar"
             android:orientation="vertical">
 
         <View
@@ -112,4 +90,29 @@
     </LinearLayout>
 
 
-</FrameLayout>
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/fragment_cart_bottom_bar">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+            <ImageView
+                    android:id="@+id/cart_blank_list"
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:src="@drawable/blank_sc"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+                android:id="@+id/cart_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+    </FrameLayout>
+
+</RelativeLayout>
