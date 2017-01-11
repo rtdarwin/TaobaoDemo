@@ -87,7 +87,6 @@ public class HttpRequest {
                         // 先不考虑多线程同时访问 mCookie 的问题
                         String[] cookieLine = conn.getHeaderField("Set-Cookie").split(";");
                         mCookie = cookieLine[0];
-                        Log.d(TAG, "get cookie: " + mCookie);
 
                         // 根据重定向地址判定是否登录成功
                         if (conn.getHeaderField("Location").contains("index")) {
@@ -621,7 +620,6 @@ public class HttpRequest {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if (mCookie != null) {
             conn.addRequestProperty("Cookie", mCookie);
-            Log.d(TAG, "sent cookie: " + mCookie);
         }
 
         try {
