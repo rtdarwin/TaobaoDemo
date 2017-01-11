@@ -5,11 +5,9 @@ public class OrderBrief {
     public String shopName;
     public String orderStatus;
 
-    // constructor
-
     public OrderBrief(String id, String name, String status) {
-        orderId = id;
-        shopName = name;
-        orderStatus = status;
+        this.orderId = id;
+        this.shopName = name;
+        this.orderStatus = status;
     }
 }

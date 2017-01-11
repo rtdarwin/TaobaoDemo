@@ -51,6 +51,16 @@
                   android:screenOrientation="portrait">
         </activity>
 
+        <activity
+                android:name=".account.AccountDetailsActivity">
+        </activity>
+
+        <activity
+                android:name=".account.OrderActivity"
+                android:label="OrderActivity"
+                android:parentActivityName=".MainActivity">
+        </activity>
+
     </application>
 
 

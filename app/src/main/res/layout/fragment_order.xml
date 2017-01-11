@@ -1,0 +1,101 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="horizontal">
+    <TextView
+            android:id="@+id/order_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="全部"
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+    <TextView
+            android:id="@+id/order_wait_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="待付款"
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+    <TextView
+            android:id="@+id/order_wait_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="待发货"
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+    <TextView
+            android:id="@+id/order_wait_receive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="待收货"
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+    <TextView
+            android:id="@+id/order_wait_evaluate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="待评价"
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:textColor="@color/black"/>
+</LinearLayout>
+
+<ImageView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:scaleType="fitXY"
+android:adjustViewBounds="true"
+android:src="@drawable/account_separator"
+/>
+
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+              android:background="@color/light_gray">
+
+    <ImageView
+            android:id="@+id/orderPreview_no_order"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleY="0.8"
+            android:scaleX="0.8"
+            android:adjustViewBounds="true"
+            android:src="@drawable/no_order"
+    />
+    <!--<ListView-->
+            <!--android:id="@+id/orderPreview_list_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/hello_blank_fragment"-->
+            <!--android:gravity="center"-->
+        <!--android:textColor="@color/black"/>-->
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/orderPreview_Recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+    />
+
+</FrameLayout>
+</LinearLayout>
