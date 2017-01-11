@@ -233,7 +233,8 @@ public class GoodsDetailActivity
             @Override
             public void onFinish(Object responese)
             {
-                shop = (ShopInfo) responese;
+                shop = (ShopInfo) responese;// shopName
+                shopName.setText(shop.shopName);
             }
 
             @Override
@@ -252,13 +253,21 @@ public class GoodsDetailActivity
                 @Override
                 public void onFinish(Object responese)
                 {
-                    if(drawables == null){
+                    if (drawables == null) {
                         drawables = new ArrayList<Drawable>();
                     }
                     synchronized (drawables) {
                         Log.d(TAG, "fetchGoodsImages: " + drawables.size());
                         drawables.add((Drawable) responese);
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            mImageSwitcher.setImageDrawable(drawables.get(0));
+                            setImageBackground(0);
+                        }
+                    });
                 }
 
                 @Override
@@ -287,7 +296,7 @@ public class GoodsDetailActivity
         double dprice = Double.parseDouble(detail.attributes.get(0).price);
         double ddiscount = Double.parseDouble(detail.discountRate);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        if (df.parse(detail.discountDeadline.substring(0,10), new ParsePosition(0)).before(new Date())) {
+        if (df.parse(detail.discountDeadline.substring(0, 10), new ParsePosition(0)).before(new Date())) {
             price.setText("￥ " + detail.attributes.get(0).price);
             discount.setVisibility(View.INVISIBLE);
             oldPriceLinearLayout.setVisibility(View.INVISIBLE);
@@ -297,15 +306,7 @@ public class GoodsDetailActivity
             oldPriceLinearLayout.setVisibility(View.VISIBLE);
             oldPrice.setText(detail.attributes.get(0).price);
         }
-        if(shop == null){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // shopName
-        shopName.setText(shop.shopName);
+
     }
 
     private void updateImages()
@@ -323,24 +324,15 @@ public class GoodsDetailActivity
             mImageView.setBackgroundResource(R.drawable.banner_round_select);
             linearLayout.addView(mImageView, layoutParams);
         }
-        while(drawables == null){
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        mImageSwitcher.setImageDrawable(drawables.get(0));
-
-        setImageBackground(currentPosition);
     }
 
-    private void updateAttrs(){
+    private void updateAttrs()
+    {
         attrList.removeAllViews();
-        for(int i = 0; i < detail.attributes.size(); ++i){
+        for (int i = 0; i < detail.attributes.size(); ++i) {
             View attr = createGoodsAttr(detail.attributes.get(i));
             attrList.addView(attr);
-            if(i == 0){
+            if (i == 0) {
                 TextView value = (TextView) attr.findViewById(R.id.attributeValue);
                 value.setBackgroundColor(getResources().getColor(R.color.tb_red));
                 value.setTextColor(getResources().getColor(R.color.white));
@@ -355,7 +347,7 @@ public class GoodsDetailActivity
         TextView id = (TextView) attr.findViewById(R.id.attributeId);
         TextView value = (TextView) attr.findViewById(R.id.attributeValue);
         final TextView price = (TextView) attr.findViewById(R.id.attrPrice);
-        
+
         id.setText(goodsAttrString.attributeId);
         value.setText(goodsAttrString.attributeValue);
         price.setText(goodsAttrString.price);
@@ -363,18 +355,18 @@ public class GoodsDetailActivity
             @Override
             public void onClick(View v)
             {
-                for(int i = 0; i < attrList.getChildCount(); ++i){
+                for (int i = 0; i < attrList.getChildCount(); ++i) {
                     View attr = attrList.getChildAt(i);
                     TextView value = (TextView) attr.findViewById(R.id.attributeValue);
                     value.setBackgroundColor(getResources().getColor(R.color.light_gray));
                     value.setTextColor(getResources().getColor(R.color.black));
                 }
-                checkedAttrId = ((TextView)v.findViewById(R.id.attributeId)).getText().toString();
+                checkedAttrId = ((TextView) v.findViewById(R.id.attributeId)).getText().toString();
                 TextView vvalue = (TextView) v.findViewById(R.id.attributeValue);
                 Log.d(TAG, "createGoodsAttr: " + vvalue.getText().toString());
                 vvalue.setBackgroundColor(getResources().getColor(R.color.tb_red));
                 vvalue.setTextColor(getResources().getColor(R.color.white));
-                String p = ((TextView)v.findViewById(R.id.attrPrice)).getText().toString();
+                String p = ((TextView) v.findViewById(R.id.attrPrice)).getText().toString();
                 price.setText("￥ " + p);
             }
         });

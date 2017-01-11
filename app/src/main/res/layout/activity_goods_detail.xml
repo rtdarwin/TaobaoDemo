@@ -232,7 +232,7 @@
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           style="@style/goodsDetailFont"
-                          android:paddingRight="260dp"
+                          android:paddingRight="314dp"
                           android:text="选择配置"/>
                 <ImageView android:layout_width="10dp"
                            android:layout_height="10dp"

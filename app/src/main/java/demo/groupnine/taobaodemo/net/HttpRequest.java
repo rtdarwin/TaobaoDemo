@@ -3,7 +3,6 @@ package demo.groupnine.taobaodemo.net;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import com.google.gson.Gson;
-
 import com.google.gson.reflect.TypeToken;
 import demo.groupnine.taobaodemo.account.OrderBrief;
 import demo.groupnine.taobaodemo.account.OrderDetail;
@@ -44,7 +43,9 @@ public class HttpRequest {
         new Thread(new Runnable() {
             @Override
             public void run()
+
             {
+                Log.d(TAG, "run: getImage " + imgAddr);
                 try {
                     String[] serverSegArr = server.split("/");
                     String imgServer = serverSegArr[0] + "//" + serverSegArr[2] + "/images";
