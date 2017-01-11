@@ -119,7 +119,7 @@ public class OrderFragment
             {
                 resetColor();
                 wait_evaluate_order.setTextColor(getResources().getColor(R.color.tb_red));
-                fetchOrderBrief("待评价");
+                fetchOrderBrief("已完成");
                 updateResultUI();
             }
         });
