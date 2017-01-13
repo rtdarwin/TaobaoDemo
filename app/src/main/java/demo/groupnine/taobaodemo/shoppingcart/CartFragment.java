@@ -257,6 +257,7 @@ public class CartFragment
             for (View v : mGoodsViewAdded) {
                 mGoodsContainerLL.removeView(v);
             }
+            mGoodsViewAdded.clear();
 
             /* 2. 设置店铺名字 */
 
@@ -268,8 +269,6 @@ public class CartFragment
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             for (int i = 0; i < c.goodsInThisShop.size(); i++) {
                 final GoodsItemInSC g = c.goodsInThisShop.get(i);
-                // TODO
-                // 这一步得到的 eachGoodsView 为 null
 
                 LinearLayout eachGoodsView = (LinearLayout) inflater.inflate(R.layout.cart_item_body, null, false);
                 mGoodsContainerLL.addView(eachGoodsView);
@@ -278,14 +277,13 @@ public class CartFragment
                 /* 3.1 图片 */
 
                 final ImageView imgView = (ImageView) eachGoodsView.findViewById(R.id.cart_body_goods_pic);
-                //Log.d(TAG, "child count = " + eachGoodsView.getChildCount());
-                //final ImageView imgView = (ImageView) eachGoodsView.getChildAt(0);
-                final String gid = g.goodsId;
+                final String gid = g.goods.goodsId;
                 imgView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v)
                     {
                         Intent intent = new Intent(getActivity(), GoodsDetailActivity.class);
+                        Log.d(TAG, "goodsId is " + gid);
                         intent.putExtra("goodsId", gid);
                         startActivity(intent);
                     }
