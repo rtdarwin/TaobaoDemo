@@ -282,6 +282,7 @@ public class GoodsDetailActivity
 
     private void updateUI()
     {
+        setTitle(detail.goodsName);
         updateDescribe();
         updateAttrs();
         updateImages();
